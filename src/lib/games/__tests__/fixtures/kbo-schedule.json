@@ -1,0 +1,71 @@
+{
+  "_comment": "koreabaseball.com 일정 ajax 응답의 형태를 재현한 픽스처입니다. 실제 응답을 캡처한 것이 아니라, 알려진 rows/row/Text 구조에 파서가 다뤄야 할 경우(날짜 이월, 더블헤더, 우천취소, 시간 미정, 모르는 팀 표기)를 담아 만든 것입니다. 실제 응답을 받아보게 되면 이 파일을 진짜 응답으로 갈아끼우고 테스트를 다시 돌리세요.",
+  "rows": [
+    {
+      "row": [
+        { "Text": "04.01(수)", "Class": "day" },
+        { "Text": "18:30" },
+        { "Text": "<span>두산</span><em>vs</em><span>LG</span>", "Class": "play" },
+        { "Text": "-" },
+        { "Text": "잠실" },
+        { "Text": "-" }
+      ]
+    },
+    {
+      "row": [
+        { "Text": "17:00" },
+        { "Text": "<span>삼성</span><em>vs</em><span>KIA</span>", "Class": "play" },
+        { "Text": "-" },
+        { "Text": "광주" },
+        { "Text": "-" }
+      ]
+    },
+    {
+      "row": [
+        { "Text": "04.02(목)", "Class": "day" },
+        { "Text": "14:00" },
+        { "Text": "<span>키움</span><em>vs</em><span>SSG</span>", "Class": "play" },
+        { "Text": "-" },
+        { "Text": "문학" },
+        { "Text": "-" }
+      ]
+    },
+    {
+      "row": [
+        { "Text": "17:30" },
+        { "Text": "<span>키움</span><em>vs</em><span>SSG</span>", "Class": "play" },
+        { "Text": "-" },
+        { "Text": "문학" },
+        { "Text": "더블헤더" }
+      ]
+    },
+    {
+      "row": [
+        { "Text": "18:30" },
+        { "Text": "<span>한화</span><em>vs</em><span>롯데</span>", "Class": "play" },
+        { "Text": "-" },
+        { "Text": "사직" },
+        { "Text": "우천취소" }
+      ]
+    },
+    {
+      "row": [
+        { "Text": "04.03(금)", "Class": "day" },
+        { "Text": "-" },
+        { "Text": "<span>NC</span><em>vs</em><span>KT</span>", "Class": "play" },
+        { "Text": "-" },
+        { "Text": "수원" },
+        { "Text": "-" }
+      ]
+    },
+    {
+      "row": [
+        { "Text": "18:30" },
+        { "Text": "<span>고양</span><em>vs</em><span>서울</span>", "Class": "play" },
+        { "Text": "-" },
+        { "Text": "목동" },
+        { "Text": "-" }
+      ]
+    }
+  ]
+}
