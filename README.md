@@ -19,30 +19,59 @@ KBO 일정을 팀별로 골라 후보로 담고 → 링크를 공유하면 → �
 npm install
 ```
 
-### 2. Supabase 프로젝트 연결
+### 2. Supabase 프로젝트 만들기
 
-[supabase.com](https://supabase.com)에서 프로젝트를 만들고, **Settings → API** 에서 값을 복사합니다.
+Supabase는 **Postgres 데이터베이스를 호스팅해주는 서비스**입니다. 이 프로젝트에서 쓰는 기능은
+**SQL Editor**(쿼리 실행)와 **Table Editor**(엑셀처럼 행 보기/편집) 둘뿐입니다. 무료 플랜으로
+충분합니다.
+
+1. [supabase.com](https://supabase.com) 가입 (GitHub 계정으로 바로 됩니다)
+2. **New project** — 이름은 아무거나(`with-baseball`), 리전은 **Northeast Asia (Seoul)**
+3. **Database Password**를 정해 적어둡니다. 지금 이 앱에는 필요 없지만 나중에 DB에
+   직접 붙을 때 쓰고, **다시 볼 수 없습니다**
+4. 프로비저닝에 1~2분 걸립니다
+
+### 3. 키 복사해서 .env.local 만들기
 
 ```bash
 cp .env.example .env.local
 ```
 
-```dotenv
-NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
-```
+대시보드 **Project Settings**에서 두 값을 찾습니다.
 
-> ⚠️ `service_role` 키는 RLS를 우회합니다. 절대 `NEXT_PUBLIC_` 접두사를 붙이지 마세요.
+| 넣을 값 | 어디에 있나 |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | **Data API** → Project URL (`https://….supabase.co`) |
+| `SUPABASE_SERVICE_ROLE_KEY` | **API Keys** → **secret** 키 (`sb_secret_…`) |
+
+> 💡 예전에 만든 프로젝트라면 secret 키 대신 **Legacy API Keys** 탭의 `service_role` 키
+> (`eyJ…`)가 보입니다. 둘은 같은 권한이라 어느 쪽이든 그대로 넣으면 됩니다.
+> 같은 화면의 `anon` / `publishable` 키는 이 앱에서 쓰지 않습니다.
+
+> ⚠️ secret(=service_role) 키는 RLS를 우회하는 **마스터 키**입니다. 절대 `NEXT_PUBLIC_`
+> 접두사를 붙이거나 깃에 올리지 마세요(`.env.local`은 `.gitignore`에 있습니다).
 > 이 앱은 브라우저에서 Supabase에 직접 접근하지 않습니다 — 모든 DB 접근은 서버에서만 일어납니다.
 
-### 3. 스키마와 팀 시드
+### 4. 테이블 만들기 (SQL Editor)
 
-Supabase 대시보드의 **SQL Editor**에서 순서대로 실행합니다.
+왼쪽 메뉴의 **SQL Editor** → **New query**. 아래 두 파일을 **순서대로**, 한 번에 하나씩
+통째로 복사해 붙여넣고 **Run**을 누릅니다.
 
-1. `supabase/migrations/0001_init.sql` — 테이블과 RLS
+1. `supabase/migrations/0001_init.sql` — 테이블 6개와 RLS
 2. `supabase/seed/teams.sql` — KBO 10구단
 
-### 4. 실행
+성공하면 `Success. No rows returned` 가 뜹니다. 왼쪽 **Table Editor**에서 `teams` 테이블에
+10개 행이 들어있으면 성공입니다.
+
+> 둘 다 몇 번을 다시 실행해도 안전합니다 (`create table if not exists`, `on conflict do update`).
+
+### 5. 경기 넣기
+
+아직 경기가 없으면 화면이 비어 있습니다. 같은 SQL Editor에서
+`supabase/seed/games.example.sql` 을 붙여넣고 Run 하면 샘플 5경기가 들어갑니다.
+실제 일정을 넣는 방법은 아래 [경기 일정 넣기](#경기-일정-넣기)를 보세요.
+
+### 6. 실행
 
 ```bash
 npm run dev

@@ -28,8 +28,9 @@ export default function ErrorBoundary({
         <ol className="mt-2 list-decimal space-y-1 pl-5 text-muted">
           <li>
             <code className="text-foreground">.env.example</code> 을{' '}
-            <code className="text-foreground">.env.local</code> 로 복사해 Supabase URL과
-            service_role 키를 채우세요.
+            <code className="text-foreground">.env.local</code> 로 복사해 Supabase의 Project
+            URL과 secret 키(<code className="text-foreground">sb_secret_…</code>, 예전
+            프로젝트라면 <code className="text-foreground">service_role</code>)를 채우세요.
           </li>
           <li>
             Supabase SQL Editor에서{' '}
