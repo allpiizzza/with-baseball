@@ -1,19 +1,32 @@
+import { GameCalendar } from '@/components/GameCalendar'
 import { GameCard } from '@/components/GameCard'
 import { GameFilters } from '@/components/GameFilters'
+import { MonthNav } from '@/components/MonthNav'
+import { ViewToggle, readView } from '@/components/ViewToggle'
+import { monthRange, parseYearMonth, yearMonthOf } from '@/lib/calendar'
+import { todayIso } from '@/lib/format'
 import { readFilters } from '@/lib/games/filters'
 import { getTeams, listGames, listStadiums } from '@/lib/games/query'
 
 export default async function GamesPage(props: PageProps<'/games'>) {
   const searchParams = await props.searchParams
+  const view = readView(searchParams)
   const values = readFilters(searchParams)
+  const today = todayIso()
+
+  // 달력은 월 단위로 움직인다. 날짜 범위는 필터가 아니라 보고 있는 달이 정한다.
+  const yearMonth =
+    parseYearMonth(typeof searchParams.month === 'string' ? searchParams.month : null) ??
+    yearMonthOf(values.from || today)
+  const range = monthRange(yearMonth)
 
   const [teams, stadiums, games] = await Promise.all([
     getTeams(),
     listStadiums(),
     listGames({
       teamIds: values.teamIds,
-      from: values.from || null,
-      to: values.to || null,
+      from: view === 'calendar' ? range.from : values.from || null,
+      to: view === 'calendar' ? range.to : values.to || null,
       side: values.side,
       stadium: values.stadium || null,
     }),
@@ -30,19 +43,27 @@ export default async function GamesPage(props: PageProps<'/games'>) {
         </p>
       </div>
 
-      <GameFilters teams={teams} stadiums={stadiums} values={values} />
+      <GameFilters teams={teams} stadiums={stadiums} values={values} hideDateRange={view === 'calendar'} />
 
-      {games.length === 0 ? (
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <ViewToggle pathname="/games" searchParams={searchParams} current={view} />
+        {view === 'calendar' ? (
+          <MonthNav pathname="/games" searchParams={searchParams} yearMonth={yearMonth} />
+        ) : (
+          <p className="text-sm text-muted">{games.length}경기</p>
+        )}
+      </div>
+
+      {view === 'calendar' ? (
+        <GameCalendar games={games} teamsById={teamsById} yearMonth={yearMonth} today={today} />
+      ) : games.length === 0 ? (
         <EmptyState hasFilters={values.teamIds.length > 0 || Boolean(values.stadium)} />
       ) : (
-        <>
-          <p className="text-sm text-muted">{games.length}경기</p>
-          <div className="space-y-2">
-            {games.map((game) => (
-              <GameCard key={game.id} game={game} teamsById={teamsById} />
-            ))}
-          </div>
-        </>
+        <div className="space-y-2">
+          {games.map((game) => (
+            <GameCard key={game.id} game={game} teamsById={teamsById} />
+          ))}
+        </div>
       )}
     </div>
   )

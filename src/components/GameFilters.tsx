@@ -1,6 +1,6 @@
 'use client'
 
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useTransition } from 'react'
 
 import type { Team } from '@/lib/games/types'
@@ -24,18 +24,28 @@ export function GameFilters({
   teams,
   stadiums,
   values,
+  hideDateRange = false,
 }: {
   teams: Team[]
   stadiums: string[]
   values: FilterValues
+  /** 달력 뷰에서는 기간을 달력이 정하므로 날짜 입력을 숨긴다. */
+  hideDateRange?: boolean
 }) {
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
 
   function apply(next: Partial<FilterValues>) {
     const merged = { ...values, ...next }
     const params = new URLSearchParams()
+
+    // 필터를 바꿔도 보고 있던 뷰(목록/달력)와 달은 그대로 유지한다.
+    for (const key of ['view', 'month']) {
+      const value = searchParams.get(key)
+      if (value) params.set(key, value)
+    }
     for (const id of merged.teamIds) params.append('team', id)
     // from 은 비어 있어도 항상 넣는다. 파라미터가 없으면 "첫 방문"이라 오늘로 채워지고,
     // 있는데 비어 있으면 "사용자가 지웠다"는 뜻이라 지난 경기까지 보여준다.
@@ -94,24 +104,28 @@ export function GameFilters({
       </div>
 
       <div className="mt-4 flex flex-wrap items-end gap-3">
-        <label className="flex flex-col gap-1 text-xs text-muted">
-          시작일
-          <input
-            type="date"
-            value={values.from}
-            onChange={(e) => apply({ from: e.target.value })}
-            className="rounded-lg border border-border bg-surface-muted px-2.5 py-1.5 text-sm text-foreground"
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-xs text-muted">
-          종료일
-          <input
-            type="date"
-            value={values.to}
-            onChange={(e) => apply({ to: e.target.value })}
-            className="rounded-lg border border-border bg-surface-muted px-2.5 py-1.5 text-sm text-foreground"
-          />
-        </label>
+        {!hideDateRange && (
+          <>
+            <label className="flex flex-col gap-1 text-xs text-muted">
+              시작일
+              <input
+                type="date"
+                value={values.from}
+                onChange={(e) => apply({ from: e.target.value })}
+                className="rounded-lg border border-border bg-surface-muted px-2.5 py-1.5 text-sm text-foreground"
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-xs text-muted">
+              종료일
+              <input
+                type="date"
+                value={values.to}
+                onChange={(e) => apply({ to: e.target.value })}
+                className="rounded-lg border border-border bg-surface-muted px-2.5 py-1.5 text-sm text-foreground"
+              />
+            </label>
+          </>
+        )}
         <label className="flex flex-col gap-1 text-xs text-muted">
           홈/원정
           <select
