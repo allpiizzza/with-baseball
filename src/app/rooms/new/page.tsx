@@ -22,7 +22,7 @@ export default async function NewRoomPage(props: PageProps<'/rooms/new'>) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">방 만들기</h1>
+        <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">방 만들기</h1>
         <p className="mt-1 text-sm text-muted">
           같이 갈 만한 경기를 후보로 담고, 만들어진 링크를 친구들에게 보내세요.
           필터를 바꿔도 담아둔 경기는 그대로 있습니다.

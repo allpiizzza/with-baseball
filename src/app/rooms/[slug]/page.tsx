@@ -10,7 +10,8 @@ import { TallyCalendar } from '@/components/TallyCalendar'
 import { TallyTable } from '@/components/TallyTable'
 import { ViewToggle, readView } from '@/components/ViewToggle'
 import { VoteToggle } from '@/components/VoteToggle'
-import { parseYearMonth, yearMonthOf } from '@/lib/calendar'
+import { monthRange, parseYearMonth, yearMonthOf } from '@/lib/calendar'
+import { withParams } from '@/lib/url'
 import { todayIso } from '@/lib/format'
 import { getTeams } from '@/lib/games/query'
 import { getRoomDetail } from '@/lib/rooms/queries'
@@ -39,6 +40,10 @@ export default async function RoomPage(props: PageProps<'/rooms/[slug]'>) {
   const yearMonth =
     parseYearMonth(typeof searchParams.month === 'string' ? searchParams.month : null) ??
     yearMonthOf(earliest ?? today)
+  const range = monthRange(yearMonth)
+
+  const rawDate = typeof searchParams.date === 'string' ? searchParams.date : null
+  const selectedDate = rawDate && rawDate >= range.from && rawDate <= range.to ? rawDate : null
 
   const myVotes = new Map<string, VoteValue>(
     votes.filter((v) => v.participant_id === me?.id).map((v) => [v.game_id, v.value]),
@@ -47,7 +52,7 @@ export default async function RoomPage(props: PageProps<'/rooms/[slug]'>) {
   return (
     <div className="space-y-8">
       <header className="space-y-3">
-        <h1 className="text-2xl font-semibold tracking-tight">{room.title}</h1>
+        <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{room.title}</h1>
         <ShareLink slug={room.slug} title={room.title} />
         <p className="text-sm text-muted">
           참가자 {summary.participantCount}명 중 {summary.respondedCount}명 응답
@@ -74,15 +79,13 @@ export default async function RoomPage(props: PageProps<'/rooms/[slug]'>) {
                   key={game.id}
                   game={game}
                   teamsById={teamsById}
+                  corner={isOwner ? <RemoveGameButton slug={room.slug} gameId={game.id} /> : null}
                   action={
-                    <div className="flex items-center gap-2">
-                      <VoteToggle
-                        slug={room.slug}
-                        gameId={game.id}
-                        current={myVotes.get(game.id) ?? null}
-                      />
-                      {isOwner && <RemoveGameButton slug={room.slug} gameId={game.id} />}
-                    </div>
+                    <VoteToggle
+                      slug={room.slug}
+                      gameId={game.id}
+                      current={myVotes.get(game.id) ?? null}
+                    />
                   }
                 />
               ))}
@@ -92,7 +95,7 @@ export default async function RoomPage(props: PageProps<'/rooms/[slug]'>) {
           {isOwner && (
             <Link
               href={`/rooms/${room.slug}/add`}
-              className="inline-block rounded-lg border border-border px-3 py-2 text-sm hover:bg-surface-muted"
+              className="flex min-h-11 items-center justify-center rounded-lg border border-border px-3 text-sm hover:bg-surface-muted sm:inline-flex"
             >
               + 후보 경기 더 담기
             </Link>
@@ -131,9 +134,16 @@ export default async function RoomPage(props: PageProps<'/rooms/[slug]'>) {
         ) : view === 'calendar' ? (
           <TallyCalendar
             summary={summary}
+            participants={participants}
             teamsById={teamsById}
             yearMonth={yearMonth}
             today={today}
+            selectedDate={selectedDate}
+            hrefForDate={(date) =>
+              withParams(`/rooms/${slug}`, searchParams, {
+                date: date === selectedDate ? null : date,
+              })
+            }
           />
         ) : (
           <TallyTable

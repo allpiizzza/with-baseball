@@ -16,6 +16,8 @@ export function MonthNav({
     withParams(pathname, searchParams, {
       view: 'calendar',
       month: formatYearMonth(shiftMonth(yearMonth, delta)),
+      // 다른 달로 넘어가면 골라둔 날짜는 의미가 없다.
+      date: null,
     })
 
   return (
@@ -24,7 +26,7 @@ export function MonthNav({
         href={link(-1)}
         scroll={false}
         aria-label="이전 달"
-        className="rounded-lg border border-border px-2.5 py-1.5 text-sm text-muted hover:text-foreground"
+        className="flex h-11 w-11 items-center justify-center rounded-lg border border-border text-lg text-muted hover:text-foreground"
       >
         ‹
       </Link>
@@ -33,7 +35,7 @@ export function MonthNav({
         href={link(1)}
         scroll={false}
         aria-label="다음 달"
-        className="rounded-lg border border-border px-2.5 py-1.5 text-sm text-muted hover:text-foreground"
+        className="flex h-11 w-11 items-center justify-center rounded-lg border border-border text-lg text-muted hover:text-foreground"
       >
         ›
       </Link>

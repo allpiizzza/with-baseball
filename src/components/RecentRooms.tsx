@@ -27,7 +27,7 @@ export function RecentRooms() {
           <li key={room.slug}>
             <Link
               href={`/rooms/${room.slug}`}
-              className="block rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm hover:bg-surface-muted"
+              className="flex min-h-11 items-center rounded-lg border border-border bg-surface px-3.5 text-sm hover:bg-surface-muted"
             >
               {room.title}
             </Link>

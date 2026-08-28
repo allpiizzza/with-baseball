@@ -35,10 +35,22 @@
   --color-accent-soft: var(--accent-soft);
 }
 
+html {
+  /* iOS 에서 가로 방향 전환 시 글자 크기가 멋대로 커지는 것을 막는다. */
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
+  /* 탭할 때 파란 사각형 대신 각 버튼의 :active 스타일이 보이게 한다. */
+  -webkit-tap-highlight-color: transparent;
   font-family:
     "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
     "Segoe UI", "Noto Sans KR", "Malgun Gothic", sans-serif;
+}
+
+/* 아이폰 홈 인디케이터에 하단 고정 바가 가리지 않도록. */
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }

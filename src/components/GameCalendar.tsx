@@ -1,9 +1,10 @@
-import { formatStartTime } from '@/lib/format'
-import type { Game, Team } from '@/lib/games/types'
-import { MonthCalendar } from '@/components/MonthCalendar'
+import { CountPill, MonthCalendar } from '@/components/MonthCalendar'
+import { GameCard } from '@/components/GameCard'
 import type { YearMonth } from '@/lib/calendar'
+import { formatGameDate, formatStartTime } from '@/lib/format'
+import type { Game, Team } from '@/lib/games/types'
 
-/** 달력 한 칸에 들어가는 경기 한 줄. 홈팀 색으로 왼쪽에 띠를 둔다. */
+/** 큰 화면 셀에 들어가는 경기 한 줄. 홈팀 색으로 왼쪽에 띠를 둔다. */
 function GameChip({ game, teamsById }: { game: Game; teamsById: Map<string, Team> }) {
   const home = teamsById.get(game.home_team_id)
   const away = teamsById.get(game.away_team_id)
@@ -32,11 +33,15 @@ export function GameCalendar({
   teamsById,
   yearMonth,
   today,
+  selectedDate,
+  hrefForDate,
 }: {
   games: Game[]
   teamsById: Map<string, Team>
   yearMonth: YearMonth
   today: string
+  selectedDate: string | null
+  hrefForDate: (date: string) => string
 }) {
   const byDate: Record<string, Game[]> = {}
   for (const game of games) {
@@ -46,13 +51,39 @@ export function GameCalendar({
   const cells = Object.fromEntries(
     Object.entries(byDate).map(([date, dayGames]) => [
       date,
-      <>
-        {dayGames.map((game) => (
+      {
+        summary: <CountPill count={dayGames.length} />,
+        detail: dayGames.map((game) => (
           <GameChip key={game.id} game={game} teamsById={teamsById} />
-        ))}
-      </>,
+        )),
+      },
     ]),
   )
 
-  return <MonthCalendar yearMonth={yearMonth} cells={cells} today={today} />
+  const selectedGames = selectedDate ? (byDate[selectedDate] ?? []) : []
+
+  return (
+    <div className="space-y-4">
+      <MonthCalendar
+        yearMonth={yearMonth}
+        cells={cells}
+        today={today}
+        selectedDate={selectedDate}
+        hrefForDate={hrefForDate}
+      />
+
+      {/* 좁은 화면에서는 셀에 "n경기"만 들어가므로, 고른 날 상세를 아래에 편다. */}
+      {selectedDate && (
+        <section className="space-y-2 sm:hidden">
+          <h2 className="text-sm font-medium">
+            {formatGameDate(selectedDate)}{' '}
+            <span className="text-muted">{selectedGames.length}경기</span>
+          </h2>
+          {selectedGames.map((game) => (
+            <GameCard key={game.id} game={game} teamsById={teamsById} />
+          ))}
+        </section>
+      )}
+    </div>
+  )
 }

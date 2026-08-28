@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <div className="space-y-10">
       <section className="space-y-4">
-        <h1 className="text-3xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           같이 야구 보러 갈 날,
           <br />
           한 번에 정하기
@@ -15,16 +15,16 @@ export default function HomePage() {
           KBO 일정을 팀별로 골라 후보로 담고, 링크를 친구들에게 보내세요. 각자 O·X만 찍으면
           다 되는 날이 맨 위로 올라옵니다. 가입은 없습니다.
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <Link
             href="/rooms/new"
-            className="rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-white"
+            className="flex h-12 items-center justify-center rounded-lg bg-accent px-5 font-medium text-white"
           >
             일정 조율 방 만들기
           </Link>
           <Link
             href="/games"
-            className="rounded-lg border border-border px-4 py-2.5 text-sm font-medium hover:bg-surface-muted"
+            className="flex h-12 items-center justify-center rounded-lg border border-border px-5 font-medium hover:bg-surface-muted"
           >
             경기 일정 보기
           </Link>

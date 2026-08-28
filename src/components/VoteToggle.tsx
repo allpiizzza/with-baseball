@@ -13,6 +13,12 @@ const ACTIVE_STYLE: Record<VoteValue, string> = {
   no: 'border-neutral-400 bg-neutral-400 text-white',
 }
 
+const LABEL_HINT: Record<VoteValue, string> = {
+  yes: '갈 수 있어요',
+  maybe: '아마도',
+  no: '안 돼요',
+}
+
 export function VoteToggle({
   slug,
   gameId,
@@ -37,8 +43,12 @@ export function VoteToggle({
   }
 
   return (
-    <div className="flex flex-col items-end gap-1">
-      <div className="flex gap-1.5">
+    <div className="w-full sm:w-auto">
+      {/*
+        모바일에서 가장 많이 눌리는 버튼이다. 세 칸을 가로로 꽉 채워 엄지로 정확히
+        누를 수 있게 하고(최소 44px), 큰 화면에서는 정사각형으로 줄인다.
+      */}
+      <div className="grid grid-cols-3 gap-2 sm:flex sm:gap-1.5">
         {OPTIONS.map((option) => {
           const active = shown === option
           return (
@@ -48,8 +58,8 @@ export function VoteToggle({
               onClick={() => vote(option)}
               aria-pressed={active}
               aria-label={`${VOTE_LABEL[option]} (${LABEL_HINT[option]})`}
-              className={`h-9 w-9 rounded-lg border text-sm font-semibold transition ${
-                active ? ACTIVE_STYLE[option] : 'border-border text-muted hover:text-foreground'
+              className={`h-12 rounded-xl border text-base font-semibold transition select-none sm:h-11 sm:w-11 sm:rounded-lg sm:text-sm ${
+                active ? ACTIVE_STYLE[option] : 'border-border text-muted active:bg-surface-muted'
               }`}
             >
               {VOTE_LABEL[option]}
@@ -57,13 +67,7 @@ export function VoteToggle({
           )
         })}
       </div>
-      {error && <span className="text-xs text-red-500">{error}</span>}
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   )
-}
-
-const LABEL_HINT: Record<VoteValue, string> = {
-  yes: '갈 수 있어요',
-  maybe: '아마도',
-  no: '안 돼요',
 }

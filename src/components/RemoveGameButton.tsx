@@ -19,7 +19,7 @@ export function RemoveGameButton({ slug, gameId }: { slug: string; gameId: strin
             setError(result.error)
           })
         }
-        className="rounded-lg border border-border px-2.5 py-1.5 text-xs text-muted hover:text-foreground disabled:opacity-40"
+        className="min-h-11 rounded-lg px-3 text-xs text-muted underline underline-offset-4 hover:text-foreground disabled:opacity-40"
         title="후보에서 빼기"
       >
         빼기

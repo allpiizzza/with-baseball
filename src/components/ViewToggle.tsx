@@ -23,7 +23,7 @@ export function ViewToggle({
   const options: ViewMode[] = ['list', 'calendar']
 
   return (
-    <div className="inline-flex rounded-lg border border-border p-0.5">
+    <div className="inline-flex rounded-lg border border-border p-1">
       {options.map((mode) => {
         const active = mode === current
         return (
@@ -31,12 +31,13 @@ export function ViewToggle({
             key={mode}
             href={withParams(pathname, searchParams, {
               view: mode === 'list' ? null : mode,
-              // 달력은 월 단위로 움직이므로 이전 뷰의 month 를 들고 가지 않는다.
+              // 달력은 월 단위로 움직이므로 이전 뷰의 month·date 를 들고 가지 않는다.
               month: null,
+              date: null,
             })}
             scroll={false}
             aria-current={active ? 'page' : undefined}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${
+            className={`flex h-11 items-center rounded-md px-4 text-sm font-medium transition ${
               active ? 'bg-accent text-white' : 'text-muted hover:text-foreground'
             }`}
           >

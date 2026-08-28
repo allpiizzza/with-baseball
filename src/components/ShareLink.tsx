@@ -35,12 +35,12 @@ export function ShareLink({ slug, title }: { slug: string; title: string }) {
         readOnly
         value={url}
         onFocus={(e) => e.currentTarget.select()}
-        className="min-w-0 flex-1 rounded-lg border border-border bg-surface-muted px-3 py-2 text-sm text-muted"
+        className="h-11 min-w-0 flex-1 rounded-lg border border-border bg-surface-muted px-3 text-base text-muted sm:text-sm"
       />
       <button
         type="button"
         onClick={copy}
-        className="shrink-0 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-surface-muted"
+        className="h-11 shrink-0 rounded-lg border border-border px-4 text-sm font-medium hover:bg-surface-muted active:bg-surface-muted"
       >
         {copied ? '복사됨' : '링크 복사'}
       </button>

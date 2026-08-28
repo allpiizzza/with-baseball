@@ -64,7 +64,7 @@ export function RoomBuilder({ games, teams }: { games: Game[]; teams: Team[] }) 
                     type="button"
                     onClick={() => toggle(game)}
                     aria-pressed={checked}
-                    className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition ${
+                    className={`h-11 w-full rounded-lg border px-4 text-sm font-medium transition sm:w-auto ${
                       checked
                         ? 'border-accent bg-accent text-white'
                         : 'border-border text-muted hover:text-foreground'
@@ -81,7 +81,7 @@ export function RoomBuilder({ games, teams }: { games: Game[]; teams: Team[] }) 
 
       <form
         action={formAction}
-        className="sticky bottom-4 mt-6 rounded-xl border border-border bg-surface p-4 shadow-lg"
+        className="sticky bottom-0 mt-6 rounded-xl border border-border bg-surface p-4 pb-safe shadow-lg sm:bottom-4 sm:pb-4"
       >
         {selectedGames.map((game) => (
           <input key={game.id} type="hidden" name="gameIds" value={game.id} />
@@ -111,12 +111,12 @@ export function RoomBuilder({ games, teams }: { games: Game[]; teams: Team[] }) 
             required
             maxLength={60}
             placeholder="방 이름 (예: 4월 잠실 직관 가자)"
-            className="min-w-0 flex-1 rounded-lg border border-border bg-surface-muted px-3 py-2 text-sm text-foreground"
+            className="h-12 min-w-0 flex-1 rounded-lg border border-border bg-surface-muted px-3 text-base text-foreground sm:h-11 sm:text-sm"
           />
           <button
             type="submit"
             disabled={isPending || selectedGames.length === 0}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
+            className="h-12 shrink-0 rounded-lg bg-accent px-5 text-base font-medium text-white disabled:opacity-40 sm:h-11 sm:text-sm"
           >
             {isPending ? '만드는 중…' : '방 만들기'}
           </button>

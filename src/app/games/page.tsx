@@ -4,6 +4,7 @@ import { GameFilters } from '@/components/GameFilters'
 import { MonthNav } from '@/components/MonthNav'
 import { ViewToggle, readView } from '@/components/ViewToggle'
 import { monthRange, parseYearMonth, yearMonthOf } from '@/lib/calendar'
+import { withParams } from '@/lib/url'
 import { todayIso } from '@/lib/format'
 import { readFilters } from '@/lib/games/filters'
 import { getTeams, listGames, listStadiums } from '@/lib/games/query'
@@ -19,6 +20,10 @@ export default async function GamesPage(props: PageProps<'/games'>) {
     parseYearMonth(typeof searchParams.month === 'string' ? searchParams.month : null) ??
     yearMonthOf(values.from || today)
   const range = monthRange(yearMonth)
+
+  // 좁은 화면에서 날짜를 눌러 그 날 상세를 펼치기 위한 선택 상태.
+  const rawDate = typeof searchParams.date === 'string' ? searchParams.date : null
+  const selectedDate = rawDate && rawDate >= range.from && rawDate <= range.to ? rawDate : null
 
   const [teams, stadiums, games] = await Promise.all([
     getTeams(),
@@ -37,7 +42,7 @@ export default async function GamesPage(props: PageProps<'/games'>) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">경기 일정</h1>
+        <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">경기 일정</h1>
         <p className="mt-1 text-sm text-muted">
           응원하는 팀만 골라서 보세요. 필터는 주소에 남으니 링크로 그대로 공유할 수 있어요.
         </p>
@@ -55,7 +60,16 @@ export default async function GamesPage(props: PageProps<'/games'>) {
       </div>
 
       {view === 'calendar' ? (
-        <GameCalendar games={games} teamsById={teamsById} yearMonth={yearMonth} today={today} />
+        <GameCalendar
+          games={games}
+          teamsById={teamsById}
+          yearMonth={yearMonth}
+          today={today}
+          selectedDate={selectedDate}
+          hrefForDate={(date) =>
+            withParams('/games', searchParams, { date: date === selectedDate ? null : date })
+          }
+        />
       ) : games.length === 0 ? (
         <EmptyState hasFilters={values.teamIds.length > 0 || Boolean(values.stadium)} />
       ) : (

@@ -81,7 +81,7 @@ export function GameFilters({
               type="button"
               onClick={() => toggleTeam(team.id)}
               aria-pressed={active}
-              className="rounded-full border px-3 py-1.5 text-sm font-medium transition"
+              className="min-h-11 rounded-full border px-4 text-sm font-medium transition active:opacity-80"
               style={
                 active
                   ? { backgroundColor: team.color, borderColor: team.color, color: '#fff' }
@@ -96,7 +96,7 @@ export function GameFilters({
           <button
             type="button"
             onClick={() => apply({ teamIds: [] })}
-            className="rounded-full px-3 py-1.5 text-sm text-muted underline underline-offset-4"
+            className="min-h-11 rounded-full px-3 text-sm text-muted underline underline-offset-4"
           >
             전체 해제
           </button>
@@ -112,7 +112,7 @@ export function GameFilters({
                 type="date"
                 value={values.from}
                 onChange={(e) => apply({ from: e.target.value })}
-                className="rounded-lg border border-border bg-surface-muted px-2.5 py-1.5 text-sm text-foreground"
+                className="h-11 rounded-lg border border-border bg-surface-muted px-2.5 text-base text-foreground sm:text-sm"
               />
             </label>
             <label className="flex flex-col gap-1 text-xs text-muted">
@@ -121,7 +121,7 @@ export function GameFilters({
                 type="date"
                 value={values.to}
                 onChange={(e) => apply({ to: e.target.value })}
-                className="rounded-lg border border-border bg-surface-muted px-2.5 py-1.5 text-sm text-foreground"
+                className="h-11 rounded-lg border border-border bg-surface-muted px-2.5 text-base text-foreground sm:text-sm"
               />
             </label>
           </>
@@ -131,7 +131,7 @@ export function GameFilters({
           <select
             value={values.side}
             onChange={(e) => apply({ side: e.target.value as Side })}
-            className="rounded-lg border border-border bg-surface-muted px-2.5 py-1.5 text-sm text-foreground"
+            className="h-11 rounded-lg border border-border bg-surface-muted px-2.5 text-base text-foreground sm:text-sm"
           >
             <option value="all">전체</option>
             <option value="home">홈경기만</option>
@@ -143,7 +143,7 @@ export function GameFilters({
           <select
             value={values.stadium}
             onChange={(e) => apply({ stadium: e.target.value })}
-            className="rounded-lg border border-border bg-surface-muted px-2.5 py-1.5 text-sm text-foreground"
+            className="h-11 max-w-[52vw] rounded-lg border border-border bg-surface-muted px-2.5 text-base text-foreground sm:max-w-none sm:text-sm"
           >
             <option value="">전체</option>
             {stadiums.map((stadium) => (

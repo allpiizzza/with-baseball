@@ -16,19 +16,19 @@ export function JoinForm({ slug }: { slug: string }) {
       <p className="mt-1 text-sm text-muted">
         닉네임만 넣으면 바로 참여할 수 있어요. 가입은 없습니다.
       </p>
-      <div className="mt-3 flex gap-2">
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
         <input
           name="nickname"
           required
           maxLength={16}
           autoComplete="off"
           placeholder="닉네임"
-          className="min-w-0 flex-1 rounded-lg border border-border bg-surface-muted px-3 py-2 text-sm text-foreground"
+          className="h-12 min-w-0 flex-1 rounded-lg border border-border bg-surface-muted px-3 text-base text-foreground sm:h-11 sm:text-sm"
         />
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
+          className="h-12 rounded-lg bg-accent px-4 text-base font-medium text-white disabled:opacity-40 sm:h-11 sm:text-sm"
         >
           {isPending ? '참여 중…' : '참여하기'}
         </button>
