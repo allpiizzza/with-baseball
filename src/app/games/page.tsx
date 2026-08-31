@@ -7,7 +7,7 @@ import { monthRange, parseYearMonth, yearMonthOf } from '@/lib/calendar'
 import { withParams } from '@/lib/url'
 import { todayIso } from '@/lib/format'
 import { readFilters } from '@/lib/games/filters'
-import { getTeams, listGames, listStadiums } from '@/lib/games/query'
+import { getTeams, listGames, listStadiums, sanitizeTeamIds } from '@/lib/games/query'
 
 export default async function GamesPage(props: PageProps<'/games'>) {
   const searchParams = await props.searchParams
@@ -39,6 +39,11 @@ export default async function GamesPage(props: PageProps<'/games'>) {
 
   const teamsById = new Map(teams.map((team) => [team.id, team]))
 
+  // 팀을 딱 하나만 고르면 달력을 그 팀 관점으로 그린다 — 상대·홈원정·원정지.
+  const selectedTeamIds = sanitizeTeamIds(values.teamIds)
+  const focusTeamId = selectedTeamIds.length === 1 ? selectedTeamIds[0] : null
+  const focusTeam = focusTeamId ? teamsById.get(focusTeamId) : undefined
+
   return (
     <div className="space-y-6">
       <div>
@@ -59,6 +64,25 @@ export default async function GamesPage(props: PageProps<'/games'>) {
         )}
       </div>
 
+      {view === 'calendar' &&
+        (focusTeam ? (
+          <p className="flex flex-wrap items-center gap-1.5 text-sm text-muted">
+            <span
+              className="inline-block h-2.5 w-2.5 rounded-full"
+              style={{ backgroundColor: focusTeam.color }}
+              aria-hidden
+            />
+            <strong className="font-medium text-foreground">{focusTeam.name}</strong> 기준 —
+            상대팀과 <span className="font-medium text-foreground">홈</span>·
+            <span className="font-medium text-foreground">원정</span>(가는 곳)을 함께 보여줍니다.
+          </p>
+        ) : (
+          <p className="text-sm text-muted">
+            팀을 <strong className="font-medium text-foreground">하나만</strong> 고르면 그 팀
+            기준으로 상대팀과 홈·원정(가는 곳)이 표시됩니다.
+          </p>
+        ))}
+
       {view === 'calendar' ? (
         <GameCalendar
           games={games}
@@ -69,6 +93,7 @@ export default async function GamesPage(props: PageProps<'/games'>) {
           hrefForDate={(date) =>
             withParams('/games', searchParams, { date: date === selectedDate ? null : date })
           }
+          focusTeamId={focusTeamId}
         />
       ) : games.length === 0 ? (
         <EmptyState hasFilters={values.teamIds.length > 0 || Boolean(values.stadium)} />
